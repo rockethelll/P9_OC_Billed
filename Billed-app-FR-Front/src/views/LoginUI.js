@@ -18,9 +18,9 @@ export default () => {
               <div class="card-body">
                 <form class="form-signin" data-testid="form-employee">
                   <h2 class="h3 mb-3 font-weight-normal">Employé</h1>
-                  <label for="inputEmail">Votre email</label>
+                  <label for="inputEmail">Votre email   employee@test.tld</label>
                   <input type="email" data-testid="employee-email-input" class="form-control" placeholder="johndoe@email.com" required autofocus>
-                  <label for="inputPassword">Mot de passe</label>
+                  <label for="inputPassword">Mot de passe  employee</label>
                   <input type="password" data-testid="employee-password-input" class="form-control" placeholder="******" required>
                   <button class="btn btn-lg btn-primary btn-block" data-testid="employee-login-button" style="background-color: #0E5AE5;" type="submit">Se connecter</button>
                 </form>
@@ -32,9 +32,9 @@ export default () => {
               <div class="card-body">
                 <form class="form-signin" data-testid="form-admin">
                   <h2 class="h3 mb-3 font-weight-normal">Administration</h1>
-                  <label for="inputEmail">Votre email</label>
+                  <label for="inputEmail">Votre email     admin@test.tld</label>
                   <input type="email" data-testid="admin-email-input" class="form-control" placeholder="johndoe@email.com" required autofocus>
-                  <label for="inputPassword">Mot de passe</label>
+                  <label for="inputPassword">Mot de passe   admin</label>
                   <input type="password" data-testid="admin-password-input" class="form-control" placeholder="******" required>
                   <button  type="submit" class="btn btn-lg btn-primary btn-block" data-testid="admin-login-button" style="background-color: #0E5AE5;">Se connecter</button>
                 </form>
