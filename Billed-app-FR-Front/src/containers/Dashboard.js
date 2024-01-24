@@ -152,11 +152,19 @@ export default class {
       this.counter++;
     }
 
+    // Fix bug: event listeners are not removed when we click on the arrow icon
+    // Remove all event listeners on bills
+    bills.forEach((bill) => {
+      $(`#open-bill${bill.id}`).off("click");
+    });
+
+    // Add event listeners on bills
     bills.forEach((bill) => {
       $(`#open-bill${bill.id}`).click((e) =>
         this.handleEditTicket(e, bill, bills),
       );
     });
+    // End fix bug
 
     return bills;
   }

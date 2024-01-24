@@ -33,6 +33,7 @@ export default class NewBill {
     formData.append("file", file);
     formData.append("email", email);
 
+    // Fix bug for extension file
     // Get the file extension
     const fileExtension = file.name.split(".").pop().toLowerCase();
 
@@ -49,6 +50,7 @@ export default class NewBill {
     } else {
       errorMessage.style.display = "none";
     }
+    // End of fix bug for extension file
 
     this.store
       .bills()

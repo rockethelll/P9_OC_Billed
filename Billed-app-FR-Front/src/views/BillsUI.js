@@ -4,12 +4,14 @@ import LoadingPage from "./LoadingPage.js";
 
 import Actions from "./Actions.js";
 
+// Fix bug for sorted bills by date
 // Sort bills by date
 const sortDates = (a, b) => {
   const dateA = new Date(a.date);
   const dateB = new Date(b.date);
   return dateB - dateA;
 };
+// End of fix bug for sorted bills by date
 
 const row = (bill) => {
   return `
@@ -54,11 +56,14 @@ export default ({ data: bills, loading, error }) => {
     return ErrorPage(error);
   }
 
+  // Fix bug for sorted bills by date
+  // Sort bills by date
   if (bills && bills.length) {
     bills.sort(sortDates);
   } else {
     console.error("No bills found");
   }
+  // End of fix bug for sorted bills by date
 
   return `
     <div class='layout'>
