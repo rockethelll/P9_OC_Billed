@@ -1,6 +1,7 @@
 {
   "scripts": {
     "test": "jest --coverage --noStackTrace --silent",
+    "jest": "jest --silent",
     "format": "prettier --write './**/*.{js,css,html}'"
   },
   "jest": {

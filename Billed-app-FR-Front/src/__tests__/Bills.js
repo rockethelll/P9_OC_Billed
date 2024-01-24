@@ -9,6 +9,15 @@ import { ROUTES_PATH } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
 
 import router from "../app/Router.js";
+import mockedBills from "../__mocks__/store.js";
+import Bills from "../containers/Bills.js";
+
+jest.mock("../app/format.js", () => ({
+  formatDate: jest.fn(),
+  formatStatus: jest.fn(),
+}));
+
+// jest.mock('../app/store', () => mockStore);
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
@@ -29,8 +38,10 @@ describe("Given I am connected as an employee", () => {
       window.onNavigate(ROUTES_PATH.Bills);
       await waitFor(() => screen.getByTestId("icon-window"));
       const windowIcon = screen.getByTestId("icon-window");
-      //to-do write expect expression
+
+      expect(windowIcon.classList.contains("active-icon")).toBeTruthy();
     });
+
     test("Then bills should be ordered from earliest to latest", () => {
       document.body.innerHTML = BillsUI({ data: bills });
       const dates = screen
@@ -42,5 +53,61 @@ describe("Given I am connected as an employee", () => {
       const datesSorted = [...dates].sort(antiChrono);
       expect(dates).toEqual(datesSorted);
     });
+
+    test("Button new bill should have an event listener", () => {
+      // Mock navigate function
+      const onNavigate = jest.fn();
+
+      // Mock Bills instance
+      const billInstance = new Bills({
+        document,
+        onNavigate,
+        store: mockedBills,
+        localStorage: window.localStorage,
+      });
+
+      // Mock handleClickNewBill function
+      billInstance.handleClickNewBill = jest.fn();
+
+      // Retrieve new bill button, and click on it
+      const newBillButton = document.querySelector(
+        'button[data-testid="btn-new-bill"]',
+      );
+      expect(newBillButton).toBeDefined();
+      newBillButton.click();
+
+      // Check if handleClickNewBill function has been called with the right parameter
+      expect(billInstance.onNavigate).toHaveBeenCalledWith(
+        ROUTES_PATH["NewBill"],
+      );
+    });
+
+    test("The eye icon should have an event listener", () => {
+      // Mock Jquery modal function
+      jQuery.fn.modal = () => {};
+
+      // retrieve all eye icons and get the first one
+      const eyeIcon = screen.getAllByTestId("icon-eye")[0];
+      expect(eyeIcon).toBeDefined();
+
+      // Mock Bills instance
+      const billInstance = new Bills({
+        document,
+        onNavigate,
+        store: mockedBills,
+        localStorage: window.localStorage,
+      });
+      billInstance.handleClickIconEye = jest.fn();
+
+      // Simulate click on the first eye icon and check if handleClickIconEye has been called
+      eyeIcon.click();
+      expect(billInstance.handleClickIconEye).toHaveBeenCalled();
+    });
   });
+
+  describe('', () => {
+    test('', () => {
+      
+    })
+  })
 });
