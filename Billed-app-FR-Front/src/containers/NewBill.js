@@ -17,16 +17,38 @@ export default class NewBill {
     this.billId = null;
     new Logout({ document, localStorage, onNavigate });
   }
+
   handleChangeFile = (e) => {
     e.preventDefault();
-    const file = this.document.querySelector(`input[data-testid="file"]`)
-      .files[0];
+    const fileInput = this.document.querySelector(`input[data-testid="file"]`);
+    const file = fileInput.files[0];
+
+    // Get the error message element on the page
+    const errorMessage = this.document.getElementById("file-error-message");
+
     const filePath = e.target.value.split(/\\/g);
     const fileName = filePath[filePath.length - 1];
     const formData = new FormData();
     const email = JSON.parse(localStorage.getItem("user")).email;
     formData.append("file", file);
     formData.append("email", email);
+
+    // Get the file extension
+    const fileExtension = file.name.split(".").pop().toLowerCase();
+
+    // Define the authorized extensions
+    const authorizedExtensions = ["jpg", "jpeg", "png"];
+
+    // Validate the file extension (if not valid, display an error message and reset the file input)
+    if (!authorizedExtensions.includes(fileExtension)) {
+      errorMessage.textContent = `Seuls les formats ${authorizedExtensions.join(`, `)} sont autorisés.`;
+      errorMessage.style.display = "block";
+      // Reset the file input
+      fileInput.value = "";
+      return;
+    } else {
+      errorMessage.style.display = "none";
+    }
 
     this.store
       .bills()
