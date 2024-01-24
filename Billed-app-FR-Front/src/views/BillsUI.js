@@ -8,8 +8,8 @@ import Actions from "./Actions.js";
 const sortDates = (a, b) => {
   const dateA = new Date(a.date);
   const dateB = new Date(b.date);
-  return dateB - dateA
-}
+  return dateB - dateA;
+};
 
 const row = (bill) => {
   return `
@@ -57,7 +57,7 @@ export default ({ data: bills, loading, error }) => {
   if (bills && bills.length) {
     bills.sort(sortDates);
   } else {
-    console.error("No bills found")
+    console.error("No bills found");
   }
 
   return `

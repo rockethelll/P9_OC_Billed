@@ -107,7 +107,7 @@ describe("Given that I am a user on login page", () => {
           email: inputData.email,
           password: inputData.password,
           status: "connected",
-        })
+        }),
       );
     });
 
@@ -219,7 +219,7 @@ describe("Given that I am a user on login page", () => {
           email: inputData.email,
           password: inputData.password,
           status: "connected",
-        })
+        }),
       );
     });
 
