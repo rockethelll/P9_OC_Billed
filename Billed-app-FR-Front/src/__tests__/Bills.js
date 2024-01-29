@@ -11,6 +11,7 @@ import { localStorageMock } from "../__mocks__/localStorage.js";
 import router from "../app/Router.js";
 import mockedBills from "../__mocks__/store.js";
 import Bills from "../containers/Bills.js";
+import mockStore from "../__mocks__/store.js";
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
@@ -188,8 +189,43 @@ describe("Given I am connected as an employee", () => {
       const bills = await billsContainer.getBills();
 
       expect(bills[0].date).toBe('invalid-date-format')
+    });
+  })
 
+  describe("When an error occurs on API", () => {
+
+    test('should handle 404 error', async () => {
+      const mockedBills = {
+        bills: jest.fn().mockReturnValue({
+          list: jest.fn().mockRejectedValue({ status: 404 }),
+        }),
+      };
+
+      const billsContainer = new Bills({
+        document: document,
+        onNavigate: jest.fn(),
+        store: mockedBills,
+        localStorage: window.localStorage,
+      });
+
+      await expect(billsContainer.getBills()).rejects.toEqual({ status: 404 });
     });
 
-  })
+    test('should handle 500 error', async () => {
+      const mockedBills = {
+        bills: jest.fn().mockReturnValue({
+          list: jest.fn().mockRejectedValue({ status: 500 }),
+        }),
+      };
+
+      const billsContainer = new Bills({
+        document: document,
+        onNavigate: jest.fn(),
+        store: mockedBills,
+        localStorage: window.localStorage,
+      });
+
+      await expect(billsContainer.getBills()).rejects.toEqual({ status: 500 });
+    });
+  });
 });
