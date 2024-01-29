@@ -1,4 +1,4 @@
-const mockedBills = {
+export const mockedBills = {
   list() {
     return Promise.resolve([
       {

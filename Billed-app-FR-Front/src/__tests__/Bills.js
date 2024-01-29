@@ -12,13 +12,6 @@ import router from "../app/Router.js";
 import mockedBills from "../__mocks__/store.js";
 import Bills from "../containers/Bills.js";
 
-jest.mock("../app/format.js", () => ({
-  formatDate: jest.fn(),
-  formatStatus: jest.fn(),
-}));
-
-// jest.mock('../app/store', () => mockStore);
-
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
     test("Then bill icon in vertical layout should be highlighted", async () => {
@@ -105,9 +98,98 @@ describe("Given I am connected as an employee", () => {
     });
   });
 
-  describe('', () => {
-    test('', () => {
+  describe('When I called getBills', () => {
+    test('It should fetch bills from the store', async () => {
+      // Mock the bills function
+      mockedBills.bills = jest.fn().mockReturnValue({
+        list: jest.fn().mockResolvedValue([{}, {}, {}, {}]),
+      });
 
-    })
+      const billsContainer = new Bills({
+        document,
+        onNavigate: jest.fn(),
+        store: mockedBills,
+        localStorage: window.localStorage
+      });
+      await billsContainer.getBills();
+
+      // Check if the bills function has been called
+      expect(mockedBills.bills).toHaveBeenCalled();
+
+      const billsFromStore = await mockedBills.bills().list();
+      expect(billsFromStore).toBeTruthy();
+      expect(billsFromStore.length).toBe(4);
+    });
+
+    test('It should handle empty list of bills from the store', async () => {
+      // Mock the bills function to return an empty array
+      mockedBills.bills = jest.fn().mockReturnValue({
+        list: jest.fn().mockResolvedValue([]),
+      });
+
+      const billsContainer = new Bills({
+        document,
+        onNavigate: jest.fn(),
+        store: mockedBills,
+        localStorage: window.localStorage
+      });
+      const bills = await billsContainer.getBills();
+
+      expect(bills).toEqual([]);
+    });
+
+    test('It should handle errors during bills fetch', async () => {
+      // Mock the bills function to throw an error
+      const errorMocked = new Error('Fake error');
+      const mockedStoreWithError = {
+        bills: jest.fn(() => ({
+          list: jest.fn(() => Promise.reject(errorMocked))
+        }))
+      }
+
+      const billsContainer = new Bills({document, onNavigate: jest.fn(), store: mockedStoreWithError, localStorage: window.localStorage});
+
+      // Check if the error is handled
+      try {
+        await billsContainer.getBills();
+      } catch (error) {
+        expect(error).toBe(errorMocked);
+      }
+    });
+
+    test('It should handle corrupted date data', async () => {
+      const mockFormatDate = jest.fn(() => {
+        if (typeof jest.fn().mockRejectedValue === 'function') {
+          return jest.fn().mockRejectedValue(new Error('Invalid date format'));
+        } else {
+          throw new Error('Invalid date format');
+        }
+      });
+
+      // Mock the store
+      const mockStore = {
+        bills: jest.fn(() => ({
+          list: jest.fn(() => Promise.resolve([
+            {
+              date: 'invalid-date-format'
+            }
+          ]))
+        }))
+      }
+
+      mockFormatDate.mockReturnValue('invalid-date-format');
+
+      const billsContainer = new Bills({
+        document,
+        onNavigate: jest.fn(),
+        store: mockStore,
+        localStorage: window.localStorage
+      });
+      const bills = await billsContainer.getBills();
+
+      expect(bills[0].date).toBe('invalid-date-format')
+
+    });
+
   })
 });
