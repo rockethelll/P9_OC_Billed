@@ -100,40 +100,63 @@ describe("Given I am an employee", () => {
       jest.spyOn(newBill, "updateBill").mockImplementation(() => {});
 
       // Fill out the form
-      const typeExpense = screen.getByTestId('expense-type');
-      const nameExpense = screen.getByTestId('expense-name')
-      const dateExpense = screen.getByTestId('datepicker');
-      const amountExpense = screen.getByTestId('amount');
-      const vatExpense = screen.getByTestId('vat');
-      const pctExpense = screen.getByTestId('pct');
-      const commentArea = screen.getByTestId('commentary');
+      const typeExpense = screen.getByTestId("expense-type");
+      const nameExpense = screen.getByTestId("expense-name");
+      const dateExpense = screen.getByTestId("datepicker");
+      const amountExpense = screen.getByTestId("amount");
+      const vatExpense = screen.getByTestId("vat");
+      const pctExpense = screen.getByTestId("pct");
+      const commentArea = screen.getByTestId("commentary");
 
-      fireEvent.change(typeExpense,{ target: { value: 'Transports' }});
-      fireEvent.change(nameExpense,{ target: { value: 'Billet' }});
-      fireEvent.change(dateExpense,{ target: { value: '2024-02-02' }});
-      fireEvent.change(amountExpense,{ target: { value: '200' }});
-      fireEvent.change(vatExpense,{ target: { value: '20' }});
-      fireEvent.change(pctExpense,{ target: { value: '20' }});
-      fireEvent.change(commentArea,{ target: { value: 'Commentaire' }});
+      fireEvent.change(typeExpense, { target: { value: "Transports" } });
+      fireEvent.change(nameExpense, { target: { value: "Billet" } });
+      fireEvent.change(dateExpense, { target: { value: "2024-02-02" } });
+      fireEvent.change(amountExpense, { target: { value: "200" } });
+      fireEvent.change(vatExpense, { target: { value: "20" } });
+      fireEvent.change(pctExpense, { target: { value: "20" } });
+      fireEvent.change(commentArea, { target: { value: "Commentaire" } });
 
       // Simulate form submission
-      const form = screen.getByTestId('form-new-bill');
+      const form = screen.getByTestId("form-new-bill");
       fireEvent.submit(form);
 
       // Check the form submission process
       expect(newBill.updateBill).toHaveBeenCalled();
       expect(onNavigate).toHaveBeenCalledWith(ROUTES_PATH["Bills"]);
-
     });
   });
 
   // Testing the bill update functionality
   describe("When I update a bill", () => {
-    test("Then the bill should be updated and navigate to Bills page", async () => {});
-  });
-});
+    test("Then the bill should be updated and navigate to Bills page", async () => {
+      // Mocking the store's bills().update function to simulate the update operation
+      const updateSpy = jest
+        .spyOn(mockedStore.bills(), "update")
+        .mockResolvedValueOnce({});
 
-// Testing the POST NewBill API call
-describe("Given I am on NewBill Page and submit a valid form", () => {
-  test("Then updateBill method should be called with right parameters", async () => {});
+      // Create bill object to be updated
+      const bill = {
+        id: "azerty",
+        type: "Transports",
+        name: "Billet",
+        amount: "200",
+        date: "2024-02-02",
+        vat: "20",
+        pct: "20",
+        commentary: "Commentaire",
+        fileUrl: "url",
+        fileName: "fileName",
+      };
+      newBill.billId = "azerty";
+
+      // Calling updateBill method with the false mocked bill
+      await newBill.updateBill(bill);
+
+      // Check if the mockstore updated the new bill
+      expect(updateSpy).toHaveBeenCalledWith({
+        data: JSON.stringify(bill),
+        selector: "azerty",
+      });
+    });
+  });
 });
