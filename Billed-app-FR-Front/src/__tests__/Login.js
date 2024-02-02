@@ -111,7 +111,7 @@ describe("Given that I am a user on login page", () => {
       );
     });
 
-    test("It should renders Bills page", () => {
+    test("Then it should renders Bills page", () => {
       expect(screen.getAllByText("Mes notes de frais")).toBeTruthy();
     });
   });
@@ -223,8 +223,14 @@ describe("Given that I am a user on login page", () => {
       );
     });
 
-    test("It should renders HR dashboard page", () => {
+    test("Then it should renders HR dashboard page", () => {
       expect(screen.queryByText("Validations")).toBeTruthy();
     });
+  });
+});
+
+describe("Given that I am a user on the login page", () => {
+  describe("When I fill fields in correct format and I click on employee button Login in", () => {
+    test("Then I should be identified as an employe in app with a defined store", async () => {});
   });
 });

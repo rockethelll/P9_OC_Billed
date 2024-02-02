@@ -48,7 +48,7 @@ describe("Given I am connected as an employee", () => {
       expect(dates).toEqual(datesSorted);
     });
 
-    test("Button new bill should have an event listener", () => {
+    test("Then the button new bill should have an event listener", () => {
       // Mock navigate function
       const onNavigate = jest.fn();
 
@@ -76,7 +76,7 @@ describe("Given I am connected as an employee", () => {
       );
     });
 
-    test("The eye icon should have an event listener", () => {
+    test("Then the eye icon should have an event listener", () => {
       // Mock Jquery modal function
       jQuery.fn.modal = () => {};
 
@@ -99,8 +99,8 @@ describe("Given I am connected as an employee", () => {
     });
   });
 
-  describe('When I called getBills', () => {
-    test('It should fetch bills from the store', async () => {
+  describe("When I called getBills", () => {
+    test("Then it should fetch bills from the store", async () => {
       // Mock the bills function
       mockedBills.bills = jest.fn().mockReturnValue({
         list: jest.fn().mockResolvedValue([{}, {}, {}, {}]),
@@ -110,7 +110,7 @@ describe("Given I am connected as an employee", () => {
         document,
         onNavigate: jest.fn(),
         store: mockedBills,
-        localStorage: window.localStorage
+        localStorage: window.localStorage,
       });
       await billsContainer.getBills();
 
@@ -122,7 +122,7 @@ describe("Given I am connected as an employee", () => {
       expect(billsFromStore.length).toBe(4);
     });
 
-    test('It should handle empty list of bills from the store', async () => {
+    test("Then it should handle empty list of bills from the store", async () => {
       // Mock the bills function to return an empty array
       mockedBills.bills = jest.fn().mockReturnValue({
         list: jest.fn().mockResolvedValue([]),
@@ -132,23 +132,28 @@ describe("Given I am connected as an employee", () => {
         document,
         onNavigate: jest.fn(),
         store: mockedBills,
-        localStorage: window.localStorage
+        localStorage: window.localStorage,
       });
       const bills = await billsContainer.getBills();
 
       expect(bills).toEqual([]);
     });
 
-    test('It should handle errors during bills fetch', async () => {
+    test("Then it should handle errors during bills fetch", async () => {
       // Mock the bills function to throw an error
-      const errorMocked = new Error('Fake error');
+      const errorMocked = new Error("Fake error");
       const mockedStoreWithError = {
         bills: jest.fn(() => ({
-          list: jest.fn(() => Promise.reject(errorMocked))
-        }))
-      }
+          list: jest.fn(() => Promise.reject(errorMocked)),
+        })),
+      };
 
-      const billsContainer = new Bills({document, onNavigate: jest.fn(), store: mockedStoreWithError, localStorage: window.localStorage});
+      const billsContainer = new Bills({
+        document,
+        onNavigate: jest.fn(),
+        store: mockedStoreWithError,
+        localStorage: window.localStorage,
+      });
 
       // Check if the error is handled
       try {
@@ -158,43 +163,44 @@ describe("Given I am connected as an employee", () => {
       }
     });
 
-    test('It should handle corrupted date data', async () => {
+    test("Then it should handle corrupted date data", async () => {
       const mockFormatDate = jest.fn(() => {
-        if (typeof jest.fn().mockRejectedValue === 'function') {
-          return jest.fn().mockRejectedValue(new Error('Invalid date format'));
+        if (typeof jest.fn().mockRejectedValue === "function") {
+          return jest.fn().mockRejectedValue(new Error("Invalid date format"));
         } else {
-          throw new Error('Invalid date format');
+          throw new Error("Invalid date format");
         }
       });
 
       // Mock the store
       const mockStore = {
         bills: jest.fn(() => ({
-          list: jest.fn(() => Promise.resolve([
-            {
-              date: 'invalid-date-format'
-            }
-          ]))
-        }))
-      }
+          list: jest.fn(() =>
+            Promise.resolve([
+              {
+                date: "invalid-date-format",
+              },
+            ]),
+          ),
+        })),
+      };
 
-      mockFormatDate.mockReturnValue('invalid-date-format');
+      mockFormatDate.mockReturnValue("invalid-date-format");
 
       const billsContainer = new Bills({
         document,
         onNavigate: jest.fn(),
         store: mockStore,
-        localStorage: window.localStorage
+        localStorage: window.localStorage,
       });
       const bills = await billsContainer.getBills();
 
-      expect(bills[0].date).toBe('invalid-date-format')
+      expect(bills[0].date).toBe("invalid-date-format");
     });
-  })
+  });
 
   describe("When an error occurs on API", () => {
-
-    test('should handle 404 error', async () => {
+    test("Then it should handle 404 error", async () => {
       const mockedBills = {
         bills: jest.fn().mockReturnValue({
           list: jest.fn().mockRejectedValue({ status: 404 }),
@@ -211,7 +217,7 @@ describe("Given I am connected as an employee", () => {
       await expect(billsContainer.getBills()).rejects.toEqual({ status: 404 });
     });
 
-    test('should handle 500 error', async () => {
+    test("Then it should handle 500 error", async () => {
       const mockedBills = {
         bills: jest.fn().mockReturnValue({
           list: jest.fn().mockRejectedValue({ status: 500 }),
