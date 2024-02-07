@@ -153,7 +153,7 @@ export default class {
     }
 
     // Fix bug: event listeners are not removed when we click on the arrow icon
-    // Remove all event listeners on bills
+    // Remove all event listeners on bills thanks to .off() jQuery method
     bills.forEach((bill) => {
       $(`#open-bill${bill.id}`).off("click");
     });
